@@ -39,5 +39,54 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    
+    // get the type of instruction
+    Not(in=instruction[15], out=isAinst);
+    Not(in=isAinst, out=isCinst);
+
+    // C Instruction and dest to A register
+    And(a=isCinst, b=instruction[5], out=ALUtoA);
+    Mux16(a=instruction, b=ALUout, sel=ALUtoA, out=AregIn);
+
+    // Load A if is A-instruction or dest to A register if is C-instruction
+    Or(a=isAinst, b=ALUtoA, out=loadA);
+    ARegister(in=AregIn, load=loadA, out=Aout);
+
+    // select A or M by op-code (a-bit), M = contents of RAM[A]
+    Mux16(a=Aout, b=inM, sel=instruction[12], out=AMout);
+
+    // if is C instruction and Load is true then Load the D Register Data
+    And(a=isCinst, b=instruction[4], out=loadD);
+    DRegister(in=ALUout, load=loadD, out=Dout);
+
+    ALU(x=Dout, y=AMout, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=ALUout, zr=ZRout, ng=NGout);
+
+    // set output to memory M, get writeM instruciton
+    Or16(a=false, b=Aout, out[0..14]=addressM);
+    Or16(a=false, b=ALUout, out=outM);
+    And(a=isCinst, b=instruction[3], out=writeM);
+
+    // jump if iszero and jump instruction
+    And(a=ZRout, b=instruction[1], out=JEQ);
+    // jump if negative and jump instruction
+    And(a=NGout, b=instruction[2], out=JLT);
+
+    // posive (not zero and not neg)
+    Or(a=ZRout, b=NGout, out=zeroOrNeg);
+    Not(in=zeroOrNeg, out=positive);
+
+    // jump if positive and jump instruction
+    And(a=positive, b=instruction[0], out=JGT);
+
+    // JLE if JLT or JEQ
+    Or(a=JLT, b=JEQ, out=JLE);
+    //get jump if JLE or JGT
+    Or(a=JLE, b=JGT, out=jumpToA);
+
+    // jump(load PC) if C instruction and jump condition, and PC inc based on PCload
+    And(a=isCinst, b=jumpToA, out=PCload);
+    Not(in=PCload, out=PCinc);
+
+    // PC Operation
+    PC(in=Aout, load=PCload, inc=PCinc, reset=reset, out[0..14]=pc);
 }
