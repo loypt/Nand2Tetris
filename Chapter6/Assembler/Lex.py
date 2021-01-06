@@ -83,7 +83,7 @@ class Lex(object):
         return self._is_match(self._num_re, word)
 
     def _is_id(self, word):
-        return self._is_match(self._id_re)
+        return self._is_match(self._id_re, word)
 
     def _is_match(self, re_str, word):
         return re.match(re_str, word) != None
