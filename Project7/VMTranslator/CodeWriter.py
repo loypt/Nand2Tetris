@@ -31,30 +31,19 @@ class CodeWriter(object):
         self.write_call('Sys.init', 0)  # call Sys.init
 
     def write_arithmetic(self, command):
-        if command == 'add':
-            self._binary('D+A')
-        elif command == 'sub':
-            self._binary('A-D')
-        elif command == 'neg':
-            self._unary('-D')
-        elif command == 'eq':
-            self._compare('JEQ')
-        elif command == 'gt':
-            self._compare('JGT')
-        elif command == 'lt':
-            self._compare('JLT')
-        elif command == 'and':
-            self._binary('D&A')
-        elif command == 'or':
-            self._binary('D|A')
-        elif command == 'not':
-            self._unary('!D')
-
+        if   command == 'add':  self._binary('D+A')
+        elif command == 'sub':  self._binary('A-D')
+        elif command == 'neg':  self._unary('-D')
+        elif command == 'eq':   self._compare('JEQ')
+        elif command == 'gt':   self._compare('JGT')
+        elif command == 'lt':   self._compare('JLT')
+        elif command == 'and':  self._binary('D&A')
+        elif command == 'or':   self._binary('D|A')
+        elif command == 'not':  self._unary('!D')
+        
     def write_push_pop(self, command, seg, index):
-        if command == C_PUSH:
-            self._push(seg, index)
-        elif command == C_POP:
-            self._pop(seg, index)
+        if command == C_PUSH:   self._push(seg, index)
+        elif command == C_POP:  self._pop(seg, index)
 
     def write_label(self, label):
         self._l_command(label)
@@ -113,24 +102,17 @@ class CodeWriter(object):
 
     # Generate code for push and pop
     def _push(self, seg, index):
-        if self._is_const_seg(seg):
-            self._val_to_stack(str(index))
-        elif self._is_mem_seg(seg):
-            self._mem_to_stack(self._asm_mem_seg(seg), index)
-        elif self._is_reg_seg(seg):
-            self._reg_to_stack(seg, index)
-        elif self._is_static_seg(seg):
-            self._static_to_stack(seg, index)
+        if   self._is_const_seg(seg):   self._val_to_stack(str(index))
+        elif self._is_mem_seg(seg):     self._mem_to_stack(self._asm_mem_seg(seg), index)
+        elif self._is_reg_seg(seg):     self._reg_to_stack(seg, index)
+        elif self._is_static_seg(seg):  self._static_to_stack(seg, index)
         self._inc_sp()
 
     def _pop(self, seg, index):
         self._dec_sp()
-        if self._is_mem_seg(seg):
-            self._stack_to_mem(self._asm_mem_seg(seg), index)
-        elif self._is_reg_seg(seg):
-            self._stack_to_reg(seg, index)
-        elif self._is_static_seg(seg):
-            self._stack_to_static(seg, index)
+        if   self._is_mem_seg(seg):     self._stack_to_mem(self._asm_mem_seg(seg), index)
+        elif self._is_reg_seg(seg):     self._stack_to_reg(seg, index)
+        elif self._is_static_seg(seg):  self._stack_to_static(seg, index)
 
     def _pop_to_dest(self, dest):
         self._dec_sp()
@@ -307,8 +289,8 @@ class CodeWriter(object):
 
     # Generate a new label
     def _new_label(self):
-        self._labelnum += 1
-        return 'LABEL' + str(self._labelnum)
+        self._label_num += 1
+        return 'LABEL' + str(self._label_num)
 
     # Write an assembler @ command
     def _a_command(self, address):

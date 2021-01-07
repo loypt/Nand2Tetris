@@ -37,7 +37,7 @@ class Parser(object):
     def __str__(self):
         pass
 
-    def has_more_command(self):
+    def has_more_commands(self):
         return self.lex.has_more_commands()
 
     def advance(self):
