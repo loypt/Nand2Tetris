@@ -53,6 +53,7 @@ def main():
         print("Usage: VMtranslator [file.vm|dir]")
     else:
         infiles, outfile = get_files(sys.argv[1])
+        print("infiles:"+str(infiles)+" outfile:"+str(outfile))
         trans = VMTranslator()
         trans.translate_all(infiles, outfile)
 

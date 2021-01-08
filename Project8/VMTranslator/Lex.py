@@ -4,6 +4,7 @@
  @Author: Loyio
  @Date: 2021/1/8
 """
+
 import re
 
 NUM = 1  # number e.g. '123'
