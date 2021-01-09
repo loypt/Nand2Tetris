@@ -1,0 +1,12 @@
+class Main {
+    function void main() {
+        var boolean test;
+        let test = true;
+        do Output.printBoolean(test);
+        if (hell)  { something happen; }
+        while (~(asdf)) {
+            
+        }
+        return;
+    }
+}
