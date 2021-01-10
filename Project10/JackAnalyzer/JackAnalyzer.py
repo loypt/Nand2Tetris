@@ -23,6 +23,7 @@ def main():
         print("Usage: JackAnalyzer [file.jack|dir]")
     else:
         infiles, outfile = get_files(sys.argv[1])
+        print("infiles: " + str(infiles) + " outfile: " + str(outfile))
         analyzer = JackAnalyzer()
         analyzer.analyze(infiles, outfile)
 
